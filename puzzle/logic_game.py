@@ -1,40 +1,28 @@
-import numpy as np
+from .formulations.standard_form import new_grid, move_grid, won
 
 
 # Class that implements the puzzle logic
 class LogicGame:
     def __init__(self, n):
-        self.__n = n
-        self.__grid = np.arange(n**2, dtype='int16')  # assigns the values
+        self.__grid = new_grid(n)
 
-        np.random.shuffle(self.__grid)  # shuffle the grid
-        self.__grid.resize((n, n))  # resize the grid
+    def __str__(self):
+        return '\n\n'.join(['  '.join(map(str, grid))
+                            for grid in self.grid])
 
-    def __getitem__(self, line):  # returns a row from the grid
-        return self.grid[line]
+    def __getitem__(self, args):  # apply the arguments to the grid
+        return self.grid[args]
 
     def move(self, movement):  # move one of the puzzle pieces
-        x, y = np.where(self.grid == 0)  # getting the zero position
-        x, y = x[0], y[0]  # unpacking the values
-
-        # Swap positions in place
-        if movement in 'Ll' and y < (self.n-1):
-            self.__grid[x][y], self.__grid[x][y+1] = self.__grid[x][y+1], self.__grid[x][y]
-        if movement in 'Rr' and y > 0:
-            self.__grid[x][y], self.__grid[x][y-1] = self.__grid[x][y-1], self.__grid[x][y]
-        if movement in 'Uu' and x < (self.n-1):
-            self.__grid[x][y], self.__grid[x+1][y] = self.__grid[x+1][y], self.__grid[x][y]
-        if movement in 'Dd' and x > 0:
-            self.__grid[x][y], self.__grid[x-1][y] = self.__grid[x-1][y], self.__grid[x][y]
+        self.__grid = move_grid(self.grid, movement)
 
     @property
     def won(self):
-        return np.array_equal(self.grid,
-                              np.roll(np.arange(self.n**2, dtype='int16').reshape((self.n, self.n)), -1))
+        return won(self.grid)
 
     @property
     def n(self):
-        return self.__n
+        return self.grid.shape[0]
 
     @property
     def grid(self):
@@ -44,36 +32,20 @@ class LogicGame:
     def grid(self, grid):
         self.__grid = grid
 
-    @staticmethod
-    def move_grid(grid, movement):  # returns a new grid
-        x, y = np.where(grid == 0)  # getting the zero position
-        x, y = x[0], y[0]  # unpacking the values
-
-        grid = grid.copy()  # does not change the grid passed as a parameter
-
-        if movement in 'Ll' and y < (grid.ndim - 1):
-            grid[x][y], grid[x][y + 1] = grid[x][y + 1], grid[x][y]
-        if movement in 'Rr' and y > 0:
-            grid[x][y], grid[x][y - 1] = grid[x][y - 1], grid[x][y]
-        if movement in 'Uu' and x < (grid.ndim - 1):
-            grid[x][y], grid[x + 1][y] = grid[x + 1][y], grid[x][y]
-        if movement in 'Dd' and x > 0:
-            grid[x][y], grid[x - 1][y] = grid[x - 1][y], grid[x][y]
-
-        return grid
-
 
 # Testing the game
 if __name__ == "__main__":
-    N = 3
+    import sys  # get the list of arguments passed to the Python script
+
+    N = int(sys.argv[1])
 
     puzzle = LogicGame(N)
 
-    print(puzzle.grid)
+    print(puzzle)
     while not puzzle.won:
         inp = input('Insert a move [l,r,u,d]: ')
         puzzle.move(inp)
 
-        print(puzzle.grid)
+        print(puzzle)
 
     print("You won!")
