@@ -5,6 +5,7 @@
 
 
 import numpy as np
+from random import choice
 
 
 def new_grid(n=3):  # returns a new grid
@@ -12,6 +13,19 @@ def new_grid(n=3):  # returns a new grid
 
     np.random.shuffle(grid)  # shuffle the grid
     grid.resize((n, n))  # resize the grid
+
+    return grid
+
+
+def update_grid(grid):
+    n = grid.shape[0]  # getting the dimension
+
+    grid = grid.copy()  # does not change the grid passed as a parameter
+
+    # shuffle and resize the grid
+    grid = grid.flatten()
+    np.random.shuffle(grid)
+    grid.resize((n, n))
 
     return grid
 
@@ -32,6 +46,14 @@ def move_grid(grid, movement):  # returns a new grid
         grid[x][y], grid[x - 1][y] = grid[x - 1][y], grid[x][y]
 
     return grid
+
+
+def random_move(grid):
+    grid = grid.copy()  # does not change the grid passed as a parameter
+
+    movement = choice(['r', 'l', 'u', 'd'])  # choosing element at random
+
+    return move_grid(grid, movement)
 
 
 def won(grid):

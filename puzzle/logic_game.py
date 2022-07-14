@@ -1,4 +1,4 @@
-from .formulations.standard_form import new_grid, move_grid, won
+from .formulations.standard_form import new_grid, update_grid, move_grid, random_move, won
 
 
 # Class that implements the puzzle logic
@@ -14,7 +14,13 @@ class LogicGame:
         return self.grid[args]
 
     def move(self, movement):  # move one of the puzzle pieces
-        self.__grid = move_grid(self.grid, movement)
+        self.grid = move_grid(self.grid, movement)
+
+    def random_move(self):
+        self.grid = random_move(self.grid)
+
+    def update(self):
+        self.grid = update_grid(self.grid)
 
     @property
     def won(self):
