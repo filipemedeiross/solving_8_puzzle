@@ -22,11 +22,11 @@ class Puzzle:
         self.screen.fill(COLOR_BG)
 
         button1 = pygame.Rect(side_spacing, bottom_spacing,
-                              width - (side_spacing * 2), height_buttom)
+                              width - 2 * side_spacing, height_buttom)
         button2 = pygame.Rect(side_spacing, button1.bottom + spacing,
-                              width / 2 - side_spacing, height_buttom)
-        button3 = pygame.Rect(button2.right, button1.bottom + spacing,
-                              width / 2 - side_spacing, height_buttom)
+                              width / 2 - side_spacing - spacing, height_buttom)
+        button3 = pygame.Rect(button2.right + 2 * spacing, button1.bottom + spacing,
+                              width / 2 - side_spacing - spacing, height_buttom)
 
         text_button1 = self.font.render("Iniciar", True, COLOR_FONT)
         text_button2 = self.font.render("3", True, COLOR_FONT)
@@ -43,6 +43,10 @@ class Puzzle:
         self.screen.blit(text_button3, (button3.centerx - (text_button3.get_width() / 2),
                                         button3.centery - (text_button3.get_height() / 2)))
 
+        # Displaying the screen
+        self.display_puzzle()
+        pygame.display.flip()
+
         clock = pygame.time.Clock()  # create an object to help update the grid
 
         # Getting input from user
@@ -57,16 +61,28 @@ class Puzzle:
                     if button2.collidepoint(event.pos) and self.puzzle.n != 3:
                         self.puzzle = LogicGame(3)
                         self.rects = self.init_rects()
+
+                        self.display_puzzle()
                     if button3.collidepoint(event.pos) and self.puzzle.n != 4:
                         self.puzzle = LogicGame(4)
                         self.rects = self.init_rects()
 
+                        self.display_puzzle()
+
+            # Performing the presentation animation
+            coord0 = self.puzzle.is_empty
             self.puzzle.random_move()
-            self.display_puzzle()
+            coord1 = self.puzzle.is_empty
+
+            if coord0 != coord1:
+                self.update_display(coord0, coord1)
 
             clock.tick(2)
 
-            pygame.display.flip()
+            pygame.display.update((self.rects[0][0].left,
+                                   self.rects[0][0].top,
+                                   self.rects[0][0].width * self.puzzle.n,
+                                   self.rects[0][0].height * self.puzzle.n))
 
     def play(self):
         self.screen.fill(COLOR_BG)  # overriding home screen buttons
@@ -78,6 +94,8 @@ class Puzzle:
                     exit(0)
 
                 if event.type == pygame.KEYDOWN:
+                    coord0 = self.puzzle.is_empty
+
                     if event.key == pygame.K_UP:
                         self.puzzle.move('u')
                     if event.key == pygame.K_DOWN:
@@ -87,16 +105,19 @@ class Puzzle:
                     if event.key == pygame.K_LEFT:
                         self.puzzle.move('l')
 
-                    self.display_puzzle()
+                    coord1 = self.puzzle.is_empty
+
+                    if coord0 != coord1:
+                        self.update_display(coord0, coord1)
 
             pygame.display.flip()
 
     def display_puzzle(self):
         # Filling grid area
-        rect = self.rects[0][0]
-        self.screen.fill(COLOR_BG, rect=(rect.left, rect.top,
-                                         rect.width * self.puzzle.n,
-                                         rect.height * self.puzzle.n))
+        self.screen.fill(COLOR_BG, rect=(self.rects[0][0].left,
+                                         self.rects[0][0].top,
+                                         self.rects[0][0].width * self.puzzle.n,
+                                         self.rects[0][0].height * self.puzzle.n))
 
         for i in range(self.puzzle.n):
             for j in range(self.puzzle.n):
@@ -106,12 +127,25 @@ class Puzzle:
                     pygame.draw.rect(self.screen, COLOR_RECT, rect, border_radius=5)
 
                     number = self.font.render(str(self.puzzle[i][j]), True, COLOR_FONT)
-
                     self.screen.blit(number, (rect.centerx - (number.get_width() / 2),
                                               rect.centery - (number.get_height() / 2)))
 
+    def update_display(self, coord0, coord1):
+        # Drawing the moved element
+        pygame.draw.rect(self.screen, COLOR_RECT,
+                         self.rects[coord0[0]][coord0[1]], border_radius=5)
+
+        number = self.font.render(str(self.puzzle[coord0[0]][coord0[1]]),
+                                  True, COLOR_FONT)
+
+        self.screen.blit(number, (self.rects[coord0[0]][coord0[1]].centerx - (number.get_width() / 2),
+                                  self.rects[coord0[0]][coord0[1]].centery - (number.get_height() / 2)))
+
+        # Cleaning up the white space
+        self.screen.fill(COLOR_BG, rect=self.rects[coord1[0]][coord1[1]])
+
     def init_rects(self):
-        side = (width - spacing_grid * 2) / self.puzzle.n
+        side = (width - 2 * spacing_grid) / self.puzzle.n
 
         return [[pygame.Rect(spacing_grid + side * j, top_spacing + side * i, side, side)
                  for j in range(self.puzzle.n)]

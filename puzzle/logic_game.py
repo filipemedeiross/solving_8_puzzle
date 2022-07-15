@@ -1,4 +1,4 @@
-from .formulations.standard_form import new_grid, update_grid, move_grid, random_move, won
+from .formulations.standard_form import new_grid, update_grid, move_grid, random_move, won, is_empty
 
 
 # Class that implements the puzzle logic
@@ -25,6 +25,10 @@ class LogicGame:
     @property
     def won(self):
         return won(self.grid)
+
+    @property
+    def is_empty(self):
+        return is_empty(self.grid)
 
     @property
     def n(self):

@@ -31,8 +31,7 @@ def update_grid(grid):
 
 
 def move_grid(grid, movement):  # returns a new grid
-    x, y = np.where(grid == 0)  # getting the zero position
-    x, y = x[0], y[0]  # unpacking the values
+    x, y = is_empty(grid)
 
     grid = grid.copy()  # does not change the grid passed as a parameter
 
@@ -61,3 +60,9 @@ def won(grid):
 
     return np.array_equal(grid,
                           np.roll(np.arange(n**2, dtype='int16').reshape((n, n)), -1))
+
+
+def is_empty(grid):
+    x, y = np.where(grid == 0)  # getting the zero position
+
+    return x[0], y[0]  # unpacking the values
