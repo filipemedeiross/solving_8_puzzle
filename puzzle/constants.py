@@ -1,9 +1,9 @@
 # Defining the constants
 
 # Colors
-COLOR_BG = 255, 140, 0
-COLOR_RECT = 210, 105, 30
-COLOR_BUTTON = 210, 105, 30
+COLOR_BG = 195, 105, 0
+COLOR_RECT = 255, 165, 0
+COLOR_BUTTON = 225, 135, 0
 COLOR_FONT = 0, 0, 0
 
 # Dimensions

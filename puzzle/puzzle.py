@@ -18,6 +18,9 @@ class Puzzle:
         # Create a Font object
         self.font = pygame.font.SysFont('Arial', size=font_size, bold=True)
 
+        # Create an object to help update the grid
+        self.clock = pygame.time.Clock()
+
     def main_screen(self):
         self.screen.fill(COLOR_BG)
 
@@ -47,8 +50,6 @@ class Puzzle:
         self.display_puzzle()
         pygame.display.flip()
 
-        clock = pygame.time.Clock()  # create an object to help update the grid
-
         # Getting input from user
         while not self.init_game:
             for event in pygame.event.get():
@@ -77,7 +78,7 @@ class Puzzle:
             if coord0 != coord1:
                 self.update_display(coord0, coord1)
 
-            clock.tick(2)
+            self.clock.tick(2)
 
             pygame.display.update((self.rects[0][0].left,
                                    self.rects[0][0].top,
@@ -85,13 +86,40 @@ class Puzzle:
                                    self.rects[0][0].height * self.puzzle.n))
 
     def play(self):
+        time = moves = 0
+
+        # Displaying fixed screen elements
         self.screen.fill(COLOR_BG)  # overriding home screen buttons
+
+        return_buttom = pygame.Rect(spacing_grid, spacing, font_size*3/2, font_size*3/2)
+        time_buttom = pygame.Rect(spacing_grid + spacing,
+                                  self.rects[-1][-1].bottom + 3 * spacing,
+                                  font_size*4, font_size*3/2)
+        moves_buttom = pygame.Rect(self.rects[-1][-1].right - spacing - font_size * 4,
+                                   self.rects[-1][-1].bottom + 3 * spacing,
+                                   font_size * 4, font_size * 3 / 2)
+
+        return_text = self.font.render('<<', True, COLOR_FONT)
+        moves_text = self.font.render(f'{moves}', True, COLOR_FONT)
+
+        pygame.draw.rect(self.screen, COLOR_BUTTON, return_buttom, border_radius=5)
+        pygame.draw.rect(self.screen, COLOR_BUTTON, moves_buttom, border_radius=5)
+
+        self.screen.blit(return_text, (return_buttom.centerx - (return_text.get_width() / 2),
+                                       return_buttom.centery - (return_text.get_height() / 2)))
+        self.screen.blit(moves_text, (moves_buttom.centerx - (moves_text.get_width() / 2),
+                                      moves_buttom.centery - (moves_text.get_height() / 2)))
+
         self.display_puzzle()
 
-        while True:
+        while self.init_game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if return_buttom.collidepoint(event.pos):
+                        self.init_game = False
 
                 if event.type == pygame.KEYDOWN:
                     coord0 = self.puzzle.is_empty
@@ -109,6 +137,27 @@ class Puzzle:
 
                     if coord0 != coord1:
                         self.update_display(coord0, coord1)
+
+                        moves += 1
+
+                        moves_text = self.font.render(f'{moves}', True, COLOR_FONT)
+
+                        pygame.draw.rect(self.screen, COLOR_BUTTON, moves_buttom, border_radius=5)
+
+                        self.screen.blit(moves_text, (moves_buttom.centerx - (moves_text.get_width() / 2),
+                                                      moves_buttom.centery - (moves_text.get_height() / 2)))
+
+            # Game time
+            time += self.clock.tick(10)
+
+            time_text = self.font.render(f'{time // 1000 // 60}:{time // 1000 % 60}', True, COLOR_FONT)
+
+            self.screen.fill(COLOR_BG, time_buttom)
+
+            pygame.draw.rect(self.screen, COLOR_BUTTON, time_buttom, border_radius=5)
+
+            self.screen.blit(time_text, (time_buttom.centerx - (time_text.get_width() / 2),
+                                         time_buttom.centery - (time_text.get_height() / 2)))
 
             pygame.display.flip()
 
@@ -174,5 +223,4 @@ if __name__ == '__main__':
     while True:
         puzzle.main_screen()
 
-        if puzzle.init_game:
-            puzzle.play()
+        puzzle.play()
