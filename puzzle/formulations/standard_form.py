@@ -31,18 +31,21 @@ def update_grid(grid, iterations=ITER):
 
 
 def move_grid(grid, movement):  # returns a new grid
-    x, y = is_empty(grid)
+    movement = movement.lower()
 
-    grid = grid.copy()  # does not change the grid passed as a parameter
+    if movement in available_moves(grid):
+        x, y = is_empty(grid)
+    
+        grid = grid.copy()  # does not change the grid passed as a parameter
 
-    if movement in 'Ll' and y < (grid.shape[1] - 1):
-        grid[x][y], grid[x][y + 1] = grid[x][y + 1], grid[x][y]
-    if movement in 'Rr' and y > 0:
-        grid[x][y], grid[x][y - 1] = grid[x][y - 1], grid[x][y]
-    if movement in 'Uu' and x < (grid.shape[0] - 1):
-        grid[x][y], grid[x + 1][y] = grid[x + 1][y], grid[x][y]
-    if movement in 'Dd' and x > 0:
-        grid[x][y], grid[x - 1][y] = grid[x - 1][y], grid[x][y]
+        if movement == 'l':
+            grid[x][y], grid[x][y + 1] = grid[x][y + 1], grid[x][y]
+        if movement == 'r':
+            grid[x][y], grid[x][y - 1] = grid[x][y - 1], grid[x][y]
+        if movement == 'u':
+            grid[x][y], grid[x + 1][y] = grid[x + 1][y], grid[x][y]
+        if movement == 'd':
+            grid[x][y], grid[x - 1][y] = grid[x - 1][y], grid[x][y]
 
     return grid
 
@@ -66,3 +69,19 @@ def is_empty(grid):
     x, y = np.where(grid == 0)  # getting the zero position
 
     return x[0], y[0]  # unpacking the values
+    
+
+def available_moves(grid):
+    x, y = is_empty(grid)
+
+    moves = ''
+    if y < (grid.shape[1] - 1):
+        moves += 'l'
+    if y > 0:
+        moves += 'r'
+    if x < (grid.shape[0] - 1):
+        moves += 'u'
+    if x > 0:
+        moves += 'd'
+        
+    return moves
