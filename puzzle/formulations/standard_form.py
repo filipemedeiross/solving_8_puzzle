@@ -8,24 +8,24 @@ import numpy as np
 from random import choice
 
 
-def new_grid(n=3):  # returns a new grid
-    grid = np.arange(n**2, dtype='int16')  # assigns the values
+ITER = 100
 
-    np.random.shuffle(grid)  # shuffle the grid
-    grid.resize((n, n))  # resize the grid
+
+def objective_grid(n):
+    return np.arange(n**2, dtype='int16').reshape((n, n))
+
+
+def new_grid(n=3):  # returns a new grid
+    grid = objective_grid(n)  # assigns the values
+
+    grid = update_grid(grid)
 
     return grid
 
 
-def update_grid(grid):
-    n = grid.shape[0]  # getting the dimension
-
-    grid = grid.copy()  # does not change the grid passed as a parameter
-
-    # shuffle and resize the grid
-    grid = grid.flatten()
-    np.random.shuffle(grid)
-    grid.resize((n, n))
+def update_grid(grid, iterations=ITER):
+    for i in range(iterations):
+        grid = random_move(grid)
 
     return grid
 
@@ -59,7 +59,7 @@ def won(grid):
     n = grid.shape[0]  # getting the grid dimension
 
     return np.array_equal(grid,
-                          np.roll(np.arange(n**2, dtype='int16').reshape((n, n)), -1))
+                          objective_grid(n))
 
 
 def is_empty(grid):
