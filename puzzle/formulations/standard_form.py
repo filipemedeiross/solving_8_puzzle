@@ -1,7 +1,8 @@
 # Sets the default formulation of the puzzle problem:
 # Initial state
-# Actions
 # Objective state
+# Actions
+# Transition model
 
 
 import numpy as np
@@ -11,7 +12,7 @@ from random import choice
 ITER = 100
 
 
-def objective_grid(n):
+def objective_grid(n=3):
     return np.arange(n**2, dtype='int16').reshape((n, n))
 
 
@@ -24,6 +25,8 @@ def new_grid(n=3):  # returns a new grid
 
 
 def update_grid(grid, iterations=ITER):
+    grid = grid.copy()  # does not change the grid passed as a parameter
+
     for i in range(iterations):
         grid = random_move(grid)
 
@@ -50,12 +53,8 @@ def move_grid(grid, movement):  # returns a new grid
     return grid
 
 
-def random_move(grid):
-    grid = grid.copy()  # does not change the grid passed as a parameter
-
-    movement = choice(['r', 'l', 'u', 'd'])  # choosing element at random
-
-    return move_grid(grid, movement)
+def random_move(grid):  # choosing element at random
+    return move_grid(grid, choice(['r', 'l', 'u', 'd']))
 
 
 def won(grid):
@@ -74,14 +73,14 @@ def is_empty(grid):
 def available_moves(grid):
     x, y = is_empty(grid)
 
-    moves = ''
+    moves = []
     if y < (grid.shape[1] - 1):
-        moves += 'l'
+        moves.append('l')
     if y > 0:
-        moves += 'r'
-    if x < (grid.shape[0] - 1):
-        moves += 'u'
+        moves.append('r')
     if x > 0:
-        moves += 'd'
-        
+        moves.append('d')
+    if x < (grid.shape[0] - 1):
+        moves.append('u')
+    
     return moves
