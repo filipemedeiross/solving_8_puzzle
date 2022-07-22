@@ -1,4 +1,5 @@
 import pygame
+from webbrowser import open
 from .logic_game import LogicGame
 from .constants import *
 
@@ -7,9 +8,7 @@ class Puzzle:
     def __init__(self):
         pygame.init()  # initializing pygame
 
-        self.__puzzle = LogicGame(3)  # 3x3 is the default
-        self.__rects = self.init_rects()
-        self.init_game = False
+        self.__puzzle = LogicGame(N)  # 3x3 is the default
 
         # Creating a display Surface
         self.screen = pygame.display.set_mode(size)
@@ -21,108 +20,112 @@ class Puzzle:
         # Create an object to help update the grid
         self.clock = pygame.time.Clock()
 
+        # Loading images used in the game
+        self.background = pygame.transform.scale(pygame.image.load('puzzle/media/background.jpg'), size)
+
+        self.win = pygame.transform.scale(pygame.image.load('puzzle/media/check.png'),
+                                          (side * self.puzzle.n, side * self.puzzle.n))
+        self.win.set_alpha(10)
+
+        self.grid = [pygame.transform.scale(pygame.image.load(f'puzzle/media/number_0{i}.png'), (side, side))
+                     for i in range(1, 9)]
+        self.rects = [(spacing_grid + side * j, top_spacing + side * i)
+                      for i in range(self.puzzle.n)
+                      for j in range(self.puzzle.n)]
+
+        self.button_play = pygame.transform.scale(pygame.image.load('puzzle/media/play.png'),
+                                                  (width - 2*side_spacing, height_button))
+        self.button_play_rect = self.button_play.get_rect(topleft=(side_spacing, bottom_spacing))
+
+        self.button_info = pygame.transform.scale(pygame.image.load('puzzle/media/info.png'),
+                                                  (width_button, height_button))
+        self.button_info_rect = self.button_info.get_rect(topleft=(width - (spacing_grid + width_button),
+                                                                   top_spacing - (spacing + height_button)))
+
+        self.button_return = pygame.transform.scale(pygame.image.load('puzzle/media/play_left.png'),
+                                                    (font_size * 3 / 2, font_size * 3 / 2))
+        self.button_return_rect = self.button_return.get_rect(topleft=(spacing_grid, spacing))
+
+        self.button_time = pygame.transform.scale(pygame.image.load('puzzle/media/empty.png'),
+                                                  (font_size * 4, font_size * 3 / 2))
+        self.button_time_rect = self.button_time.get_rect(topleft=(spacing_grid + spacing,
+                                                                   self.rects[-1][1] + side + 3 * spacing))
+
+        self.button_moves = pygame.transform.scale(pygame.image.load('puzzle/media/empty.png'),
+                                                   (font_size * 4, font_size * 3 / 2))
+        self.button_moves_rect = self.button_moves.get_rect(topleft=(width - (spacing_grid + spacing + self.button_moves.get_width()),
+                                                                     self.rects[-1][1] + side + 3 * spacing))
+
+    def init_game(self):  # method that start the game
+        while True:
+            self.main_screen()
+            self.play()
+
     def main_screen(self):
-        self.screen.fill(COLOR_BG)
+        self.puzzle.update()  # update the grid
 
-        button1 = pygame.Rect(side_spacing, bottom_spacing,
-                              width - 2 * side_spacing, height_buttom)
-        button2 = pygame.Rect(side_spacing, button1.bottom + spacing,
-                              width / 2 - side_spacing - spacing, height_buttom)
-        button3 = pygame.Rect(button2.right + 2 * spacing, button1.bottom + spacing,
-                              width / 2 - side_spacing - spacing, height_buttom)
+        # Preparing the main screen
+        self.screen.blit(self.background, (0, 0))
 
-        text_button1 = self.font.render("Iniciar", True, COLOR_FONT)
-        text_button2 = self.font.render("3", True, COLOR_FONT)
-        text_button3 = self.font.render("4", True, COLOR_FONT)
+        self.screen.blit(self.button_play, self.button_play_rect)
+        self.screen.blit(self.button_info, self.button_info_rect)
 
-        pygame.draw.rect(self.screen, COLOR_BUTTON, button1, border_radius=5)
-        pygame.draw.rect(self.screen, COLOR_BUTTON, button2, border_radius=5)
-        pygame.draw.rect(self.screen, COLOR_BUTTON, button3, border_radius=5)
-
-        self.screen.blit(text_button1, (button1.centerx - (text_button1.get_width() / 2),
-                                        button1.centery - (text_button1.get_height() / 2)))
-        self.screen.blit(text_button2, (button2.centerx - (text_button2.get_width() / 2),
-                                        button2.centery - (text_button2.get_height() / 2)))
-        self.screen.blit(text_button3, (button3.centerx - (text_button3.get_width() / 2),
-                                        button3.centery - (text_button3.get_height() / 2)))
-
-        # Displaying the screen
         self.display_puzzle()
-        pygame.display.flip()
 
-        # Getting input from user
-        while not self.init_game:
+        pygame.display.flip()  # displaying the screen
+
+        while True:
+            # Getting input from user
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    exit(0)
+                    exit(0)  # leaving the game
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if button1.collidepoint(event.pos):
-                        self.init_game = True
-                    if button2.collidepoint(event.pos) and self.puzzle.n != 3:
-                        self.puzzle = LogicGame(3)
-                        self.rects = self.init_rects()
-
-                        self.display_puzzle()
-                    if button3.collidepoint(event.pos) and self.puzzle.n != 4:
-                        self.puzzle = LogicGame(4)
-                        self.rects = self.init_rects()
-
-                        self.display_puzzle()
+                    if self.button_play_rect.collidepoint(event.pos):
+                        return
+                    if self.button_info_rect.collidepoint(event.pos):
+                        open('https://github.com/filipemedeiross', new=2)
 
             # Performing the presentation animation
-            coord0 = self.puzzle.is_empty
+            coord_0 = self.puzzle.is_empty
             self.puzzle.random_move()
-            coord1 = self.puzzle.is_empty
+            coord_1 = self.puzzle.is_empty
 
-            if coord0 != coord1:
-                self.update_display(coord0, coord1)
+            if coord_0 != coord_1:
+                self.update_puzzle(coord_0, coord_1)
 
+            # Updating clock and grid display
             self.clock.tick(2)
 
-            pygame.display.update((self.rects[0][0].left,
-                                   self.rects[0][0].top,
-                                   self.rects[0][0].width * self.puzzle.n,
-                                   self.rects[0][0].height * self.puzzle.n))
+            pygame.display.update(self.rects[0], (side*self.puzzle.n, side*self.puzzle.n))
 
     def play(self):
-        time = moves = 0
+        time = moves = 0  # auxiliary variables
 
         # Displaying fixed screen elements
-        self.screen.fill(COLOR_BG)  # overriding home screen buttons
+        self.screen.blit(self.background, (0, 0))  # overriding home screen buttons
 
-        return_buttom = pygame.Rect(spacing_grid, spacing, font_size*3/2, font_size*3/2)
-        time_buttom = pygame.Rect(spacing_grid + spacing,
-                                  self.rects[-1][-1].bottom + 3 * spacing,
-                                  font_size*4, font_size*3/2)
-        moves_buttom = pygame.Rect(self.rects[-1][-1].right - spacing - font_size * 4,
-                                   self.rects[-1][-1].bottom + 3 * spacing,
-                                   font_size * 4, font_size * 3 / 2)
+        self.screen.blit(self.button_return, self.button_return_rect)
 
-        return_text = self.font.render('<<', True, COLOR_FONT)
+        self.screen.blit(self.button_moves, self.button_moves_rect)
+
         moves_text = self.font.render(f'{moves}', True, COLOR_FONT)
-
-        pygame.draw.rect(self.screen, COLOR_BUTTON, return_buttom, border_radius=5)
-        pygame.draw.rect(self.screen, COLOR_BUTTON, moves_buttom, border_radius=5)
-
-        self.screen.blit(return_text, (return_buttom.centerx - (return_text.get_width() / 2),
-                                       return_buttom.centery - (return_text.get_height() / 2)))
-        self.screen.blit(moves_text, (moves_buttom.centerx - (moves_text.get_width() / 2),
-                                      moves_buttom.centery - (moves_text.get_height() / 2)))
+        self.screen.blit(moves_text, (self.button_moves_rect.centerx - (moves_text.get_width() / 2),
+                                      self.button_moves_rect.centery - (moves_text.get_height() / 2)))
 
         self.display_puzzle()
 
-        while self.init_game:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if return_buttom.collidepoint(event.pos):
-                        self.init_game = False
+                    if self.button_return_rect.collidepoint(event.pos):
+                        return
 
-                if event.type == pygame.KEYDOWN:
-                    coord0 = self.puzzle.is_empty
+                if event.type == pygame.KEYDOWN and not self.puzzle.won:
+                    coord_0 = self.puzzle.is_empty
 
                     if event.key == pygame.K_UP:
                         self.puzzle.move('u')
@@ -133,94 +136,59 @@ class Puzzle:
                     if event.key == pygame.K_LEFT:
                         self.puzzle.move('l')
 
-                    coord1 = self.puzzle.is_empty
+                    coord_1 = self.puzzle.is_empty
 
-                    if coord0 != coord1:
-                        self.update_display(coord0, coord1)
+                    if coord_0 != coord_1:
+                        self.update_puzzle(coord_0, coord_1)
 
                         moves += 1
 
+                        self.screen.blit(self.button_moves, self.button_moves_rect)
+
                         moves_text = self.font.render(f'{moves}', True, COLOR_FONT)
+                        self.screen.blit(moves_text, (self.button_moves_rect.centerx - (moves_text.get_width() / 2),
+                                                      self.button_moves_rect.centery - (moves_text.get_height() / 2)))
 
-                        pygame.draw.rect(self.screen, COLOR_BUTTON, moves_buttom, border_radius=5)
+            if self.puzzle.won:
+                self.screen.blit(self.win, self.rects[0])
+            else:
+                # Game time
+                time += self.clock.tick(10)
 
-                        self.screen.blit(moves_text, (moves_buttom.centerx - (moves_text.get_width() / 2),
-                                                      moves_buttom.centery - (moves_text.get_height() / 2)))
+                self.screen.blit(self.button_time, self.button_time_rect)
 
-            # Game time
-            time += self.clock.tick(10)
-
-            time_text = self.font.render(f'{time // 1000 // 60}:{time // 1000 % 60}', True, COLOR_FONT)
-
-            self.screen.fill(COLOR_BG, time_buttom)
-
-            pygame.draw.rect(self.screen, COLOR_BUTTON, time_buttom, border_radius=5)
-
-            self.screen.blit(time_text, (time_buttom.centerx - (time_text.get_width() / 2),
-                                         time_buttom.centery - (time_text.get_height() / 2)))
+                time_text = self.font.render(f'{time // 1000 // 60}:{time // 1000 % 60}', True, COLOR_FONT)
+                self.screen.blit(time_text, (self.button_time_rect.centerx - (time_text.get_width() / 2),
+                                             self.button_time_rect.centery - (time_text.get_height() / 2)))
 
             pygame.display.flip()
 
     def display_puzzle(self):
-        # Filling grid area
-        self.screen.fill(COLOR_BG, rect=(self.rects[0][0].left,
-                                         self.rects[0][0].top,
-                                         self.rects[0][0].width * self.puzzle.n,
-                                         self.rects[0][0].height * self.puzzle.n))
+        self.screen.blit(self.background, self.rects[0],
+                         area=(self.rects[0], (side * self.puzzle.n, side * self.puzzle.n)))
 
-        for i in range(self.puzzle.n):
-            for j in range(self.puzzle.n):
-                rect = self.rects[i][j]
+        # Displaying fixed screen elements
+        for num, pos in zip(self.puzzle.grid.flatten(), self.rects):
+            if num:
+                self.screen.blit(self.grid[num - 1], pos)
 
-                if self.puzzle[i][j]:
-                    pygame.draw.rect(self.screen, COLOR_RECT, rect, border_radius=5)
+    def update_puzzle(self, coord_0, coord_1):
+        index_0 = coord_0[0]*N + coord_0[1]
+        index_1 = coord_1[0]*N + coord_1[1]
 
-                    number = self.font.render(str(self.puzzle[i][j]), True, COLOR_FONT)
-                    self.screen.blit(number, (rect.centerx - (number.get_width() / 2),
-                                              rect.centery - (number.get_height() / 2)))
-
-    def update_display(self, coord0, coord1):
         # Drawing the moved element
-        pygame.draw.rect(self.screen, COLOR_RECT,
-                         self.rects[coord0[0]][coord0[1]], border_radius=5)
-
-        number = self.font.render(str(self.puzzle[coord0[0]][coord0[1]]),
-                                  True, COLOR_FONT)
-
-        self.screen.blit(number, (self.rects[coord0[0]][coord0[1]].centerx - (number.get_width() / 2),
-                                  self.rects[coord0[0]][coord0[1]].centery - (number.get_height() / 2)))
+        self.screen.blit(self.grid[self.puzzle[coord_0] - 1], self.rects[index_0])
 
         # Cleaning up the white space
-        self.screen.fill(COLOR_BG, rect=self.rects[coord1[0]][coord1[1]])
-
-    def init_rects(self):
-        side = (width - 2 * spacing_grid) / self.puzzle.n
-
-        return [[pygame.Rect(spacing_grid + side * j, top_spacing + side * i, side, side)
-                 for j in range(self.puzzle.n)]
-                for i in range(self.puzzle.n)]
+        self.screen.blit(self.background, self.rects[index_1],
+                         area=(self.rects[index_1], (side, side)))
 
     @property
     def puzzle(self):
         return self.__puzzle
 
-    @puzzle.setter
-    def puzzle(self, n_puzzle):
-        self.__puzzle = n_puzzle
-
-    @property
-    def rects(self):
-        return self.__rects
-
-    @rects.setter
-    def rects(self, n_rects):
-        self.__rects = n_rects
-
 
 if __name__ == '__main__':
     puzzle = Puzzle()
 
-    while True:
-        puzzle.main_screen()
-
-        puzzle.play()
+    puzzle.init_game()

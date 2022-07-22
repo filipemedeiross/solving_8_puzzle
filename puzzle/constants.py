@@ -1,9 +1,9 @@
 # Defining the constants
 
+# Game settings
+N = 3
+
 # Colors
-COLOR_BG = 195, 105, 0
-COLOR_RECT = 255, 165, 0
-COLOR_BUTTON = 225, 135, 0
 COLOR_FONT = 0, 0, 0
 
 # Dimensions
@@ -12,9 +12,10 @@ font_size = 20
 
 spacing = 10
 spacing_grid = 25
-
 side_spacing = 15
 bottom_spacing = height * 3 / 4
 top_spacing = 60
 
-height_buttom = 35
+width_button = height_button = 35
+
+side = (width - 2 * spacing_grid) / N
