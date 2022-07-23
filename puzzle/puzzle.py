@@ -23,10 +23,6 @@ class Puzzle:
         # Loading images used in the game
         self.background = pygame.transform.scale(pygame.image.load('puzzle/media/background.jpg'), size)
 
-        self.win = pygame.transform.scale(pygame.image.load('puzzle/media/check.png'),
-                                          (side * self.puzzle.n, side * self.puzzle.n))
-        self.win.set_alpha(10)
-
         self.grid = [pygame.transform.scale(pygame.image.load(f'puzzle/media/number_0{i}.png'), (side, side))
                      for i in range(1, 9)]
         self.rects = [(spacing_grid + side * j, top_spacing + side * i)
@@ -46,6 +42,11 @@ class Puzzle:
                                                     (font_size * 3 / 2, font_size * 3 / 2))
         self.button_return_rect = self.button_return.get_rect(topleft=(spacing_grid, spacing))
 
+        self.button_refresh = pygame.transform.scale(pygame.image.load('puzzle/media/refresh.png'),
+                                                     (side * self.puzzle.n, side * self.puzzle.n))
+        self.button_refresh.set_alpha(180)
+        self.button_refresh_rect = self.button_refresh.get_rect(topleft=(self.rects[0]))
+
         self.button_time = pygame.transform.scale(pygame.image.load('puzzle/media/empty.png'),
                                                   (font_size * 4, font_size * 3 / 2))
         self.button_time_rect = self.button_time.get_rect(topleft=(spacing_grid + spacing,
@@ -62,8 +63,6 @@ class Puzzle:
             self.play()
 
     def main_screen(self):
-        self.puzzle.update()  # update the grid
-
         # Preparing the main screen
         self.screen.blit(self.background, (0, 0))
 
@@ -122,9 +121,21 @@ class Puzzle:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button_return_rect.collidepoint(event.pos):
+                        self.puzzle.update()  # update the grid
                         return
 
-                if event.type == pygame.KEYDOWN and not self.puzzle.won:
+                    if self.puzzle.won and self.button_refresh_rect.collidepoint(event.pos):
+                        time = moves = 0  # auxiliary variables
+
+                        moves_text = self.font.render(f'{moves}', True, COLOR_FONT)
+                        self.screen.blit(self.button_moves, self.button_moves_rect)
+                        self.screen.blit(moves_text, (self.button_moves_rect.centerx - (moves_text.get_width() / 2),
+                                                      self.button_moves_rect.centery - (moves_text.get_height() / 2)))
+
+                        self.puzzle.update()  # update the grid
+                        self.display_puzzle()
+
+                if not self.puzzle.won and event.type == pygame.KEYDOWN:
                     coord_0 = self.puzzle.is_empty
 
                     if event.key == pygame.K_UP:
@@ -149,9 +160,10 @@ class Puzzle:
                         self.screen.blit(moves_text, (self.button_moves_rect.centerx - (moves_text.get_width() / 2),
                                                       self.button_moves_rect.centery - (moves_text.get_height() / 2)))
 
-            if self.puzzle.won:
-                self.screen.blit(self.win, self.rects[0])
-            else:
+                        if self.puzzle.won:
+                            self.screen.blit(self.button_refresh, self.button_refresh_rect)
+
+            if not self.puzzle.won:
                 # Game time
                 time += self.clock.tick(10)
 
