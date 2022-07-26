@@ -1,3 +1,6 @@
+# Documentation available at tests/informed_search.ipynb
+
+
 from .priority_queue import PriorityQueue
 from .node import Problem, Node
 
@@ -25,12 +28,10 @@ class ASTS:  # A* tree search
 
         # Checking if the search process failed
         if self.situation == SEARCH_FAIL:
-            print("Search process failed!")
             return
 
         # Checking if the search was successful
         if self.situation == SEARCH_SUCCESS:
-            print("Solution already found!")
             return
 
         # Performing the search step
@@ -52,19 +53,6 @@ class ASTS:  # A* tree search
         # Loop that performs breadth-first search
         while self.situation != SEARCH_FAIL and self.situation != SEARCH_SUCCESS:
             self.step_search()
-
-        if self.situation == SEARCH_FAIL:
-            print("Search process failed!")
-        else:
-            print("Solution found!")
-
-    @property
-    def show_solution(self):
-        if self.situation == SEARCH_SUCCESS:
-            return '\n'.join([node.__str__() for node in self.solution]) + \
-                   f'\nCost: {self.solution[-1].cost}'
-
-        print("Solution still not found!")
 
     @property
     def actions(self):
