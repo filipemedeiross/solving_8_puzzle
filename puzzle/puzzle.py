@@ -11,9 +11,8 @@ class Puzzle:
 
         self.__puzzle = LogicGame(N)  # 3x3 is the default
 
-        # Creating a display Surface
-        self.screen = pygame.display.set_mode(size)
-        pygame.display.set_caption("Puzzle Game")
+        # Screen is initialized with init_game method
+        self.screen = None
 
         # Create a Font object
         self.font = pygame.font.SysFont('Arial', size=font_size, bold=True)
@@ -62,6 +61,10 @@ class Puzzle:
                                                                       self.rects[-1][1] + side + 3 * spacing))
 
     def init_game(self):  # method that start the game
+        # Creating a display Surface
+        self.screen = pygame.display.set_mode(size)
+        pygame.display.set_caption("Puzzle Game")
+
         while True:
             self.main_screen()
             self.play()
