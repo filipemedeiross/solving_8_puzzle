@@ -143,6 +143,8 @@ class Puzzle:
                             self.screen.blit(moves_text, (self.button_moves_rect.centerx - (moves_text.get_width() / 2),
                                                           self.button_moves_rect.centery - (moves_text.get_height() / 2)))
 
+                            self.clock.tick()  # update the clock
+
                             self.puzzle.update()  # update the grid
                             self.display_puzzle()
 
