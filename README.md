@@ -41,11 +41,43 @@ puzzle/                         Top-level package
 ```
 ## Running the Game
 
-In the folder where the puzzle package is located, use the following command to run the game:
+Using some Linux distro and make sure you have [Python 3](https://www.python.org/) installed.
 
-`
-python3 -m puzzle.puzzle
-`
+Clone the project:
+
+```bash
+  git clone https://github.com/filipemedeiross/solving_puzzle_by_searching.git
+```
+
+Access the project directory:
+
+```bash
+  cd solving_puzzle_by_searching
+```
+
+Creating a virtual environment (for the example we use the location directory parameter as `.venv`):
+
+```bash
+  python3 -m venv .venv
+```
+
+Activating the virtual environment:
+
+```bash
+  source .venv/bin/activate
+```
+
+Install all required packages specified in requirements.txt:
+
+```bash
+  pip install -r requirements.txt
+```
+
+Use the following command to run the game:
+
+```bash
+  python3 -m puzzle.puzzle
+```
 ## References
 
 Norvig, Peter. Inteligência Artificial. Grupo GEN, 2013.
