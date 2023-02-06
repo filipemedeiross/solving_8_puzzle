@@ -22,6 +22,12 @@ The tests folder contains the notebooks where the search algorithm tests were pe
 
 Considering that solving the puzzle requires an average of 22 steps, it was necessary to implement the A* search algorithm, which proved to be more efficient. Among the implementation options tested, the tree search was more efficient than the graph search, being the puzzle solving strategy adopted in the game.
 
+Therefore, we get the following result:
+
+<p align="center"> 
+    <img src="./examples/ai.gif" width="242" height="399">
+</p>
+
 ## Puzzle Pack Organization
 ```
 puzzle/                         Top-level package
