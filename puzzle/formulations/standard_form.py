@@ -7,14 +7,12 @@ def objective_grid(n=3):
 
 def new_grid(n=3):
     grid = objective_grid(n)
-
     update_grid_ip(grid)
 
     return grid
 
 def update_grid(grid, iterations=ITER):
     grid = grid.copy()
-
     update_grid_ip(grid, iterations)
 
     return grid
@@ -26,7 +24,6 @@ def update_grid_ip(grid, iterations=ITER):
 def move_grid(grid, movement):
     grid = grid.copy()
     movement = movement.lower()
-
     move_grid_ip(grid, movement)
 
     return grid
