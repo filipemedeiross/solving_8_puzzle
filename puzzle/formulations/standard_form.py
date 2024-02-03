@@ -1,45 +1,41 @@
-# Sets the default formulation of the puzzle problem:
-# Initial state
-# Objective state
-# Actions
-# Transition model
-
-
 import numpy as np
-from random import choice
-
-
-ITER = 100
+from .constants import *
 
 
 def objective_grid(n=3):
-    return np.arange(n**2, dtype='int16').reshape((n, n))
+    return np.arange(n**2, dtype='int8').reshape((n, n))
 
+def new_grid(n=3):
+    grid = objective_grid(n)
 
-def new_grid(n=3):  # returns a new grid
-    grid = objective_grid(n)  # assigns the values
-
-    grid = update_grid(grid)
+    update_grid_ip(grid)
 
     return grid
-
 
 def update_grid(grid, iterations=ITER):
-    grid = grid.copy()  # does not change the grid passed as a parameter
+    grid = grid.copy()
 
-    for i in range(iterations):
-        grid = random_move(grid)
+    update_grid_ip(grid, iterations)
 
     return grid
 
+def update_grid_ip(grid, iterations=ITER):
+    for _ in range(iterations):
+        random_move_ip(grid)
 
-def move_grid(grid, movement):  # returns a new grid
+def move_grid(grid, movement):
+    grid = grid.copy()
     movement = movement.lower()
 
-    if movement in available_moves(grid):
+    move_grid_ip(grid, movement)
+
+    return grid
+
+def move_grid_ip(grid, movement):
+    movement = movement.lower()
+
+    if available_move(grid, movement):
         x, y = is_empty(grid)
-    
-        grid = grid.copy()  # does not change the grid passed as a parameter
 
         if movement == 'l':
             grid[x][y], grid[x][y + 1] = grid[x][y + 1], grid[x][y]
@@ -50,37 +46,56 @@ def move_grid(grid, movement):  # returns a new grid
         if movement == 'd':
             grid[x][y], grid[x - 1][y] = grid[x - 1][y], grid[x][y]
 
-    return grid
+def random_move(grid):
+    return move_grid(grid, np.random.choice(MOVES))
 
-
-def random_move(grid):  # choosing element at random
-    return move_grid(grid, choice(['r', 'l', 'u', 'd']))
-
-
-def won(grid):
-    n = grid.shape[0]  # getting the grid dimension
-
-    return np.array_equal(grid,
-                          objective_grid(n))
-
+def random_move_ip(grid):
+    move_grid_ip(grid, np.random.choice(MOVES))
 
 def is_empty(grid):
-    x, y = np.where(grid == 0)  # getting the zero position
+    x, y = np.where(grid == 0)
 
-    return x[0], y[0]  # unpacking the values
-    
+    return x[0], y[0]
+
+def available_move(grid, move):
+    x, y = is_empty(grid)
+    rows, cols = grid.shape
+
+    if move == 'd':
+        if x > 0:
+            return True
+    elif move == 'r':
+        if y > 0:
+            return True
+    elif move == 'u':
+        if x < rows - 1:
+            return True
+    elif move == 'l':
+        if y < cols - 1:
+            return True
+
+    return False
 
 def available_moves(grid):
     x, y = is_empty(grid)
+    rows, cols = grid.shape
 
     moves = []
-    if y < (grid.shape[1] - 1):
-        moves.append('l')
-    if y > 0:
-        moves.append('r')
     if x > 0:
         moves.append('d')
-    if x < (grid.shape[0] - 1):
+    if y > 0:
+        moves.append('r')
+    if x < rows - 1:
         moves.append('u')
-    
+    if y < cols - 1:
+        moves.append('l')
+
     return moves
+
+def won(grid):
+    n = grid.shape[0]
+
+    return np.array_equal(grid, objective_grid(n))
+
+def won_comp(grid, obj_grid):
+    return np.array_equal(grid, obj_grid)
