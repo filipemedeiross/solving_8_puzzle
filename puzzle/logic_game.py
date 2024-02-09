@@ -1,30 +1,31 @@
-from .formulations.standard_form import new_grid, update_grid, move_grid, random_move, won, is_empty
+from .search_algorithm.constants import OBJ_GRID
+from .formulations.standard_form import new_grid, update_grid_ip, move_grid_ip, \
+                                        random_move_ip, won_comp, is_empty
 
 
-# Class that implements the puzzle logic
 class LogicGame:
     def __init__(self, n):
-        self.__grid = new_grid(n)
+        self.grid = new_grid(n)
 
-    def __str__(self):
-        return '\n\n'.join(['  '.join(map(str, grid))
-                            for grid in self.grid])
-
-    def __getitem__(self, args):  # apply the arguments to the grid
+    def __getitem__(self, args):
         return self.grid[args]
 
-    def move(self, movement):  # move one of the puzzle pieces
-        self.grid = move_grid(self.grid, movement)
+    def __str__(self):
+        return '\n\n'.join(['  '.join(map(str, row))
+                            for row in self.grid])
+
+    def move(self, movement):
+        move_grid_ip(self.grid, movement)
 
     def random_move(self):
-        self.grid = random_move(self.grid)
+        random_move_ip(self.grid)
 
     def update(self):
-        self.grid = update_grid(self.grid)
+        update_grid_ip(self.grid)
 
     @property
     def won(self):
-        return won(self.grid)
+        return won_comp(self.grid, OBJ_GRID)
 
     @property
     def is_empty(self):
@@ -34,21 +35,12 @@ class LogicGame:
     def n(self):
         return self.grid.shape[0]
 
-    @property
-    def grid(self):
-        return self.__grid
-
-    @grid.setter
-    def grid(self, grid):
-        self.__grid = grid
-
 
 # Testing the game
 if __name__ == "__main__":
-    import sys  # get the list of arguments passed to the Python script
+    import sys
 
     N = int(sys.argv[1])
-
     puzzle = LogicGame(N)
 
     print(puzzle)
