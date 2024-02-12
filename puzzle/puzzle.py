@@ -100,8 +100,6 @@ class Puzzle:
 
                             self.display_play_screen()
                             self.display_moves(moves)
-
-                    continue
                 elif event.type == pygame.KEYDOWN:
                     coord_0 = self.puzzle.is_empty
                     self.puzzle.move(MOVES[event.key])

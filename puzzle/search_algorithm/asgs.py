@@ -14,20 +14,6 @@ class ASGS:
         self.solution  = None
 
     def step_search(self):
-        # Checking three initial conditions:
-        # Root node initial check
-        # Checking if the search process failed
-        # Checking if the search was successful
-        if self.situation == SEARCH_NOT_STARTED:
-            self.frontier.add(self.problem.initial)
-            self.situation = SEARCH_STARTED
-        elif self.situation == SEARCH_FAIL:
-            print('Search process failed!')
-            return
-        elif self.situation == SEARCH_SUCCESS:
-            print('Solution already found!')
-            return
-
         # Performing the search step
         node = self.frontier.remove_min()
 
@@ -55,7 +41,21 @@ class ASGS:
                 self.frontier.add(child)
 
     def search(self):
-        while self.situation == SEARCH_STARTED or self.situation == SEARCH_NOT_STARTED:
+        # Checking three initial conditions:
+        # Root node initial check
+        # Checking if the search process failed
+        # Checking if the search was successful
+        if self.situation == SEARCH_NOT_STARTED:
+            self.frontier.add(self.problem.initial)
+            self.situation = SEARCH_STARTED
+        elif self.situation == SEARCH_FAIL:
+            print('Search process failed!')
+            return
+        elif self.situation == SEARCH_SUCCESS:
+            print('Solution already found!')
+            return
+
+        while self.situation == SEARCH_STARTED:
             self.step_search()
 
     def explored_node(self, state):
