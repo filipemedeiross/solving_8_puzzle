@@ -2,7 +2,7 @@ import pygame
 from webbrowser import open
 from .constants import *
 from .logic_game import LogicGame
-from .search_algorithm import ASGS
+from .search_algorithm import ASTS
 
 
 class Puzzle:
@@ -115,7 +115,7 @@ class Puzzle:
                             self.display_refresh()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button_solve_rect.collidepoint(event.pos):
-                        solution = ASGS(self.puzzle.grid)
+                        solution = ASTS(self.puzzle.grid)
                         solution.search()
 
                         for action in solution.actions:

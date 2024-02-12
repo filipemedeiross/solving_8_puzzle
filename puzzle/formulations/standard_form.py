@@ -89,6 +89,14 @@ def available_moves(grid):
 
     return moves
 
+def available_moves_search(grid, action):
+    moves = available_moves(grid)
+
+    if action:
+        moves.remove(INV_MOVES[action])
+
+    return moves
+
 def won(grid):
     n = grid.shape[0]
 

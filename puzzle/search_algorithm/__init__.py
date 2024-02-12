@@ -1,2 +1,2 @@
 # Documentation available at tests/informed_search.ipynb
-from .asgs import ASGS
+from .asts import ASTS

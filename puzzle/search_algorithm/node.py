@@ -1,6 +1,6 @@
 import numpy as np
 from .constants import OBJ_GRID
-from ..formulations import won_comp, available_moves, move_grid
+from ..formulations import won_comp, available_moves_search, move_grid
 
 
 def heuristic_manhattan(grid):
@@ -38,6 +38,10 @@ class Node:
         return cls(state, parent.cost + 1, parent, action)
 
     @property
+    def hash(self):
+        return np.array2string(self.state)
+
+    @property
     def solution(self):
         solution = []
 
@@ -55,5 +59,5 @@ class Problem:
     def __init__(self, initial):
         self.initial = Node(initial, 0, None, None)
         self.objective = won_comp
-        self.actions = available_moves
+        self.actions = available_moves_search
         self.result = move_grid
