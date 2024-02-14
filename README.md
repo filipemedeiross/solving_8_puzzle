@@ -17,7 +17,7 @@ The puzzle was developed utilizing the numpy library for game logic and the pyga
     <img src="https://github.com/filipemedeiross/solving_puzzle_by_searching/blob/main/examples/home_screen.jpeg?raw=true" width="250" height="400">
 </p>
 
-The initial screen dynamically showcases the puzzle through randomized movements, accompanied by a **Play** button. Clicking on this button initiates the game with the current state of the pieces as demonstrated. Additionally, an **i** button directs users to the game's gitHub repository for further exploration.
+The initial screen dynamically showcases the puzzle through randomized movements, accompanied by a **Play** button. Clicking on this button initiates the game with the current state of the pieces as demonstrated. Additionally, an **i** button directs users to the game's github repository for further exploration.
 
 <p align="center"> 
     <img src="https://github.com/filipemedeiross/solving_puzzle_by_searching/blob/main/examples/game_screen.jpeg?raw=true" width="250" height="400">
