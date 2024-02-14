@@ -120,10 +120,10 @@ Use the following command to run the game:
 ```
 ## References
 
-Norvig, Peter. Inteligência Artificial. Grupo GEN, 2013.
-
-Images used: <https://opengameart.org/>
+Stuart Russell and Peter Norvig. **Artificial Intelligence: A Modern Approach**. 3rd ed., Pearson, 2009.
 
 Numpy: <https://numpy.org/doc/stable/>
 
 Pygame: <https://www.pygame.org/docs/>
+
+Images used: <https://opengameart.org/>
