@@ -4,7 +4,9 @@
 
 This project marks the beginning of a series of projects in which simple games will be developed using the pygame library, and these games will be conquered using machine learning algorithms and artificial intelligence in general.
 
-The motivation behind this approach lies in frequent situations where certain evaluation metrics, when applied to specific algorithms, prove to be inaccurate and obscure their true practical significance. In extreme cases, algorithms with poor performance may be inaccurately assessed positively by specific metrics that, in practice, do not reflect their true effectiveness and distort their evaluation. When developing algorithms to win games, we have two main evaluation metrics that are simple and have empirical significance:
+The motivation behind this approach lies in frequent situations where certain evaluation metrics, when applied to specific algorithms, prove to be inaccurate and obscure their true practical significance. In extreme cases, algorithms with poor performance may be inaccurately assessed positively by specific metrics that, in practice, do not reflect their true effectiveness and distort their evaluation.
+
+When developing algorithms to win games, we have two main evaluation metrics that are simple and have empirical significance:
 
 1. Whether the algorithm won or not.
 2. If it won, how efficient its performance was.
