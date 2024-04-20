@@ -88,13 +88,13 @@ Using some Linux distro and make sure you have [Python 3](https://www.python.org
 Clone the project:
 
 ```bash
-  git clone https://github.com/filipemedeiross/solving_puzzle_by_searching.git
+  git clone https://github.com/filipemedeiross/solving_8_puzzle.git
 ```
 
 Access the project directory:
 
 ```bash
-  cd solving_puzzle_by_searching
+  cd solving_8_puzzle
 ```
 
 Creating a virtual environment (for the example we use the location directory parameter as `.venv`):
