@@ -61,6 +61,22 @@ In the end, we have the following result for the complete game:
     <img src="./examples/ai.gif" width="250" height="400">
 </p>
 
+## Supervised Solvers
+
+The `notebooks` folder also contains experiments with supervised methods for solving the puzzle. First, a dataset was built by applying the A* tree search (ASTS) to random game instances. For each solved state, the corresponding best move was stored, creating a supervised learning dataset.
+
+Based on this dataset, supervised models were trained to predict the next move from a given board configuration. In this setting, puzzle solving is treated as a classification task, where each state is mapped to one of the possible actions. The final approach adopts a hybrid strategy. For configurations already seen during training, the solver follows the stored movement memory. For unseen configurations, it uses the trained model to predict the best next move.
+
+The figure below compares the hybrid decision tree solver (CCP), the KNN solver, and the original ASTS approach on random instances:
+
+<p align="center"> 
+    <img src="./examples/comparison_supervised_methods.jpeg" width="1000">
+</p>
+
+The results show that **CCP combines full resolution capability with a clear efficiency gain**. Like ASTS, it solves **100% of the instances**, while KNN reaches **98.6%**. In addition, CCP achieves the **lowest average solving time** among the three methods, with **0.008 seconds**, compared to **0.026 seconds** for ASTS.
+
+This gain in efficiency comes with only a small trade-off in solution quality. On average, CCP requires **16.908 moves** to solve the puzzle, whereas ASTS requires **15.296 moves**. In other words, CCP maintains full solving performance and significantly reduces runtime, at the cost of roughly **2 additional moves on average**.
+
 ## Puzzle Pack Organization
 ```
 puzzle/                         Top-level package
