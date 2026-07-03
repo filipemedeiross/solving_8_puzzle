@@ -1,2 +1,5 @@
-numpy==1.26.3
+numpy==2.5.0
+pandas==3.0.3
+matplotlib==3.11.0
+scikit-learn==1.9.0
 pygame==2.5.2
