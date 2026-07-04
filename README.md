@@ -77,6 +77,28 @@ The results show that **CCP combines full resolution capability with a clear eff
 
 This gain in efficiency comes with only a small trade-off in solution quality. On average, CCP requires **16.908 moves** to solve the puzzle, whereas ASTS requires **15.296 moves**. In other words, CCP maintains full solving performance and significantly reduces runtime, at the cost of roughly **2 additional moves on average**.
 
+## Interpretability
+
+Besides runtime and resolution rate, the CCP decision tree also allows a simple interpretation of the learned behavior.
+
+<p align="center"> 
+    <img src="./examples/empty_position_frequency.jpeg" width="350">
+</p>
+
+The empty position appears more frequently in the **center cell**, followed by the central cross-shaped region. This is coherent with the ASTS-generated dataset, since keeping the empty cell near the center gives the solver more possible movements and greater flexibility during the search.
+
+<p align="center"> 
+    <img src="./examples/confusion_matrix_ccp.jpeg" width="350">
+</p>
+
+The confusion matrix shows that most predictions are concentrated on the main diagonal, indicating good classification performance. The lowest number of errors occurs between inverse movements, such as **left/right** and **up/down**, suggesting that the model rarely confuses a move with its direct opposite.
+
+<p align="center"> 
+    <img src="./examples/feature_importance_dtc.jpeg" width="350">
+</p>
+
+The feature importance analysis reinforces the relevance of the **center cell**, which is the most important position for the decision tree. After it, the lower region of the board receives relatively higher importance, while the three upper cells are less relevant. This may indicate that the upper region is more associated with final adjustments, whereas the center and lower positions are more decisive during the solving process.
+
 ## Puzzle Pack Organization
 ```
 puzzle/                         Top-level package
