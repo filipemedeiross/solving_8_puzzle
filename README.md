@@ -65,39 +65,40 @@ In the end, we have the following result for the complete game:
 
 The `notebooks` folder also contains experiments with supervised methods for solving the puzzle. First, a dataset was built by applying the A* tree search (ASTS) to random game instances. For each solved state, the corresponding best move was stored, creating a supervised learning dataset.
 
-Based on this dataset, supervised models were trained to predict the next move from a given board configuration. In this setting, puzzle solving is treated as a classification task, where each state is mapped to one of the possible actions. The final approach adopts a hybrid strategy. For configurations already seen during training, the solver follows the stored movement memory. For unseen configurations, it uses the trained model to predict the best next move.
+Based on this dataset, supervised models were trained to predict the next move from a given board configuration. In this setting, puzzle solving is treated as a classification task, where each state is mapped to one of the possible actions. The final approach is based solely on model inference and legal move verification. At each step, the trained model predicts the next action, and the solver checks whether the predicted move is valid before applying it. The solving process is limited to a maximum of 100 moves.
 
-The figure below compares the hybrid decision tree solver (CCP), the KNN solver, and the original ASTS approach on random instances:
+The figure below compares the decision tree solver (CCP), the KNN solver, and the original ASTS approach on random instances:
 
 <p align="center"> 
     <img src="./examples/comparison_supervised_methods.jpeg" width="1000">
 </p>
 
-The results show that **CCP combines full resolution capability with a clear efficiency gain**. Like ASTS, it solves **100% of the instances**, while KNN reaches **98.6%**. In addition, CCP achieves the **lowest average solving time** among the three methods, with **0.008 seconds**, compared to **0.026 seconds** for ASTS.
+The results show that supervised learning methods were able to learn relevant movement patterns from the dataset and solve most puzzle instances. KNN solved **100% of the instances**, while CCP solved **97.2%**, failing only in a small number of cases. This indicates that the learned models can generalize the solving strategy to unseen configurations.
 
-This gain in efficiency comes with only a small trade-off in solution quality. On average, CCP requires **16.908 moves** to solve the puzzle, whereas ASTS requires **15.296 moves**. In other words, CCP maintains full solving performance and significantly reduces runtime, at the cost of roughly **2 additional moves on average**.
+However, the supervised methods were not able to outperform ASTS in terms of efficiency. ASTS remained the fastest and most reliable approach, while KNN was the least efficient method in runtime, despite solving all instances. Regarding solution quality, ASTS consistently found the shortest paths, with an average of approximately **15 moves**. CCP increased this value to around **37 moves**, showing a significant loss in solution quality. In contrast, KNN achieved a strong performance in this aspect, solving all instances with only about **2.5 additional moves on average** compared to ASTS.
+
+Overall, the results indicate that supervised models can successfully learn puzzle-solving behavior, especially in the case of KNN. Nevertheless, it was not yet possible to obtain a learned solver with performance comparable to ASTS while also improving runtime efficiency.
 
 ## Interpretability
 
-Besides runtime and resolution rate, the CCP decision tree also allows a simple interpretation of the learned behavior.
+Regarding the interpretative aspects of the data and models, the empty position appears more frequently in the **center cell**, followed by the central cross-shaped region. This is coherent with the ASTS-generated dataset, since keeping the empty cell near the center gives the solver more possible movements and greater flexibility during the search.
 
 <p align="center"> 
     <img src="./examples/empty_position_frequency.jpeg" width="350">
 </p>
 
-The empty position appears more frequently in the **center cell**, followed by the central cross-shaped region. This is coherent with the ASTS-generated dataset, since keeping the empty cell near the center gives the solver more possible movements and greater flexibility during the search.
+The confusion matrices of the three models show that most predictions are concentrated on the main diagonal, indicating good classification performance. The lowest number of errors occurs between inverse movements, such as **left/right** and **up/down**, suggesting that the models rarely confuse a move with its direct opposite.
 
 <p align="center"> 
-    <img src="./examples/confusion_matrix_ccp.jpeg" width="350">
+    <img src="./examples/confusion_matrix.jpeg" width="350">
 </p>
 
-The confusion matrix shows that most predictions are concentrated on the main diagonal, indicating good classification performance. The lowest number of errors occurs between inverse movements, such as **left/right** and **up/down**, suggesting that the model rarely confuses a move with its direct opposite.
+The feature importance analysis reinforces the relevance of the **center cell**, which is the most important position for the decision tree.
 
 <p align="center"> 
     <img src="./examples/feature_importance_dtc.jpeg" width="350">
 </p>
 
-The feature importance analysis reinforces the relevance of the **center cell**, which is the most important position for the decision tree. After it, the lower region of the board receives relatively higher importance, while the three upper cells are less relevant. This may indicate that the upper region is more associated with final adjustments, whereas the center and lower positions are more decisive during the solving process.
 
 ## Puzzle Pack Organization
 ```
