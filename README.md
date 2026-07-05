@@ -90,7 +90,7 @@ Regarding the interpretative aspects of the data and models, the empty position 
 The confusion matrices of the three models show that most predictions are concentrated on the main diagonal, indicating good classification performance. The lowest number of errors occurs between inverse movements, such as **left/right** and **up/down**, suggesting that the models rarely confuse a move with its direct opposite.
 
 <p align="center"> 
-    <img src="./examples/confusion_matrix.jpeg" width="350">
+    <img src="./examples/confusion_matrix.jpeg" width="1000">
 </p>
 
 The feature importance analysis reinforces the relevance of the **center cell**, which is the most important position for the decision tree.
