@@ -81,10 +81,13 @@ Overall, the results indicate that supervised models can successfully learn puzz
 
 ## Interpretability
 
-Regarding the interpretative aspects of the data and models, the empty position appears more frequently in the **center cell**, followed by the central cross-shaped region. This is coherent with the ASTS-generated dataset, since keeping the empty cell near the center gives the solver more possible movements and greater flexibility during the search.
+Regarding the interpretative aspects of the data and models, the empty position appears more frequently in the **center cell**, followed by the central cross-shaped region. This is coherent with the ASTS-generated dataset, since keeping the empty cell near the center gives the solver more possible movements and greater flexibility during the search. The feature importance analysis reinforces this behavior, as the **center cell** is also the most important position for the decision tree, while the final board positions have lower influence, suggesting that the initial adjustments are more decisive for the model's predictions.
 
-<p align="center"> 
+<p align="center">
     <img src="./examples/empty_position_frequency.jpeg" width="350">
+</p>
+<p align="center">
+    <img src="./examples/feature_importance_dtc.jpeg"   width="400">
 </p>
 
 The confusion matrices of the three models show that most predictions are concentrated on the main diagonal, indicating good classification performance. The lowest number of errors occurs between inverse movements, such as **left/right** and **up/down**, suggesting that the models rarely confuse a move with its direct opposite.
@@ -92,13 +95,6 @@ The confusion matrices of the three models show that most predictions are concen
 <p align="center"> 
     <img src="./examples/confusion_matrix.jpeg" width="1000">
 </p>
-
-The feature importance analysis reinforces the relevance of the **center cell**, which is the most important position for the decision tree.
-
-<p align="center"> 
-    <img src="./examples/feature_importance_dtc.jpeg" width="350">
-</p>
-
 
 ## Puzzle Pack Organization
 ```
