@@ -81,13 +81,16 @@ Overall, the results indicate that supervised models can successfully learn puzz
 
 ## Interpretability
 
-Regarding the interpretative aspects of the data and models, the empty position appears more frequently in the **center cell**, followed by the central cross-shaped region. This is coherent with the ASTS-generated dataset, since keeping the empty cell near the center gives the solver more possible movements and greater flexibility during the search. The feature importance analysis reinforces this behavior, as the **center cell** is also the most important position for the decision tree.
+Regarding the interpretative aspects of the data and models, the empty position appears more frequently in the **center cell**, followed by the central cross-shaped region. This is coherent with the ASTS-generated dataset, since keeping the empty cell near the center gives the solver more possible movements and greater flexibility during the search.
 
 <p align="center">
     <img src="./examples/empty_position_frequency.jpeg" width="350">
 </p>
+
+The feature importance analysis reinforces this behavior, as the center cell is also the most important position for the decision tree. This suggests that the learned model captures a structural pattern consistent with the search dynamics observed in the generated dataset.
+
 <p align="center">
-    <img src="./examples/feature_importance_dtc.jpeg"   width="400">
+    <img src="./examples/feature_importance_dtc.jpeg"   width="375">
 </p>
 
 The confusion matrices of the three models show that most predictions are concentrated on the main diagonal, indicating good classification performance. The lowest number of errors occurs between inverse movements, such as **left/right** and **up/down**, suggesting that the models rarely confuse a move with its direct opposite.
